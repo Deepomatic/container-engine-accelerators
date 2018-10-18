@@ -35,8 +35,8 @@ presubmit: vet
 	@./build/check_boilerplate.sh
 
 TAG?=$(shell git rev-parse HEAD)
-REGISTRY?=gcr.io/google-containers
-IMAGE=nvidia-gpu-device-plugin
+REGISTRY?=deepomatic
+IMAGE=shared-gpu-gcp-k8s-device-plugin
 
 build:
 	cd cmd/nvidia_gpu; go build nvidia_gpu.go
@@ -45,6 +45,6 @@ container:
 	docker build --pull -t ${REGISTRY}/${IMAGE}:${TAG} .
 
 push:
-	gcloud docker -- push ${REGISTRY}/${IMAGE}:${TAG}
+	docker push ${REGISTRY}/${IMAGE}:${TAG}
 
 .PHONY: all format test vet presubmit build container push

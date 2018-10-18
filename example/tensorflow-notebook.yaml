@@ -34,7 +34,6 @@ metadata:
   name: tf-notebook
 spec:
   serviceName: "tf-notebook"
-  replicas: 1
   template:
     metadata:
       labels:
@@ -42,18 +41,19 @@ spec:
     spec:
       tolerations:
       - key: nvidia.com/gpu
+        operator: Exists
         effect: NoSchedule
       securityContext:
         fsGroup: 0
       containers:
       - name: tf-notebook
-        image: gcr.io/kubeflow/tensorflow-notebook-cpu:v1
+        image: gcr.io/kubeflow/tensorflow-notebook-gpu:v20180213-6d6843ac
         resources:
-#          limits:
- #           nvidia.com/gpu: 1 # Number of GPUs
-          requests:
-            cpu: 1
-            memory: 1Gi
+         limits:
+           deepomatic.com/shared-gpu: 1
+         requests:
+            cpu: 0.1
+            memory: 0.1Gi
         ports:
         - containerPort: 8888
           name: notebook

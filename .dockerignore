@@ -12,6 +12,7 @@ examples/
 nvidia-driver-installer/
 
 cmd/nvidia_gpu/nvidia_gpu
+cmd/nvidia_gpu/daemonset.yaml
 
 pkg/gpu/nvidia/nvidia.test
 

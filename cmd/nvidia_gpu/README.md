@@ -3,7 +3,7 @@ Kubernetes Device Plugin for NVIDIA GPUs
 
 This directory contains the code for a Kubernetes [device plugin](https://kubernetes.io/docs/concepts/cluster-administration/device-plugins/) for NVIDIA GPUs.
 
-The daemonset manifest at https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/device-plugins/nvidia-gpu/daemonset.yaml can be used to deploy this device plugin to a cluster (1.9 onwards).
+The daemonset manifest at https://github.com/Deepomatic/container-engine-accelerators/blob/master/cmd/nvidia_gpu/daemonset.yaml can be used to deploy this device plugin to a cluster (1.9 onwards).
 
 In [GKE](https://g.co/gke), from 1.9 onwards, this daemonset is automatically deployed as an addon. Note that daemonset pods are only scheduled on nodes with accelerators attached, they are not scheduled on nodes that don't have any accelerators attached.
 

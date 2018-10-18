@@ -41,7 +41,7 @@ const (
 )
 
 var (
-	resourceName = "nvidia.com/gpu"
+	resourceName = "deepomatic.com/shared-gpu"
 )
 
 // nvidiaGPUManager manages nvidia gpu devices.

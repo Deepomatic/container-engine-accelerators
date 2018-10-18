@@ -55,4 +55,4 @@ spec:
           value: "400365"
         resources:
           limits:
-            nvidia.com/gpu: 1
+            deepomatic.com/shared-gpu: 1

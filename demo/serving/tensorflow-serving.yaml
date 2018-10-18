@@ -39,7 +39,7 @@ spec:
           - --model_base_path=gs://vishh/tensorflow/inception/
         resources:
           limits:
-            nvidia.com/gpu: 1
+            deepomatic.com/shared-gpu: 1
         readinessProbe:
           exec:
             command:
@@ -71,7 +71,7 @@ spec:
   minReplicas: 1
   maxReplicas: 10
   metrics:
-  - external:  
+  - external:
       metricName: container.googleapis.com|container|accelerator|duty_cycle
       targetAverageValue: 20
       metricSelector:
@@ -92,4 +92,3 @@ spec:
     targetPort: 9000
   selector:
     app: tensorflow-serving
-

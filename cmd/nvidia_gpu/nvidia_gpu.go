@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"time"
 
-	gpumanager "github.com/GoogleCloudPlatform/container-engine-accelerators/pkg/gpu/nvidia"
+	gpumanager "github.com/Deepomatic/container-engine-accelerators/pkg/gpu/nvidia"
 	"github.com/golang/glog"
 )
 

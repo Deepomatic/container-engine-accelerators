@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: deepomatic-shared-gpu-gcp-k8s-device-plugin
+  namespace: kube-system
+  labels:
+    k8s-app: deepomatic-shared-gpu-gcp-k8s-device-plugin
+spec:
+  selector:
+    matchLabels:
+      k8s-app: deepomatic-shared-gpu-gcp-k8s-device-plugin
+  template:
+    metadata:
+      labels:
+        k8s-app: deepomatic-shared-gpu-gcp-k8s-device-plugin
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+    spec:
+      priorityClassName: system-node-critical
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: cloud.google.com/gke-accelerator
+                operator: Exists
+      tolerations:
+      - operator: "Exists"
+        effect: "NoExecute"
+      - operator: "Exists"
+        effect: "NoSchedule"
+      volumes:
+      - name: device-plugin
+        hostPath:
+          path: /var/lib/kubelet/device-plugins
+      - name: dev
+        hostPath:
+          path: /dev
+      containers:
+      - image: "deepomatic/shared-gpu-gcp-k8s-device-plugin:latest"
+        command: ["/usr/bin/deepomatic-shared-gpu-gcp-k8s-device-plugin", "-logtostderr"]
+        name: deepomatic-shared-gpu-gcp-k8s-device-plugin
+        resources:
+          requests:
+            cpu: 50m
+            memory: 10Mi
+          limits:
+            cpu: 50m
+            memory: 10Mi
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: device-plugin
+          mountPath: /device-plugin
+        - name: dev
+          mountPath: /dev
+  updateStrategy:
+    type: RollingUpdate

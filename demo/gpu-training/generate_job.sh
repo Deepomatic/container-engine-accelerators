@@ -72,7 +72,7 @@ spec:
               fieldPath: metadata.labels['experiment-id']
         resources:
           limits:
-            nvidia.com/gpu: 8
+            deepomatic.com/shared-gpu: 1
 
 EOF
 
