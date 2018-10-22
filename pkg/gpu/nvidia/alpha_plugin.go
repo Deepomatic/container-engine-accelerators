@@ -62,9 +62,10 @@ func (s *pluginServiceV1Alpha) Allocate(ctx context.Context, rqt *pluginapi.Allo
 		if dev.Health != pluginapi.Healthy {
 			return nil, fmt.Errorf("invalid allocation request with unhealthy device %s", id)
 		}
+		deviceFilename := s.ngm.GetDeviceFilename(id)
 		resp.Devices = append(resp.Devices, &pluginapi.DeviceSpec{
-			HostPath:      "/dev/" + id,
-			ContainerPath: "/dev/" + id,
+			HostPath:      "/dev/" + deviceFilename,
+			ContainerPath: "/dev/" + deviceFilename,
 			Permissions:   "mrw",
 		})
 	}
