@@ -1,6 +1,7 @@
 Dockerfile
 .git
 .dockerignore
+Jenkinsfile
 
 CONTRIBUTING.md
 daemonset.yaml
