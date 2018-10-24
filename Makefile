@@ -18,7 +18,7 @@ all: presubmit
 
 test:
 	@echo ">> running tests"
-	@$(GO) test -short -race $(pkgs)
+	@$(GO) test -v -race $(pkgs)
 
 format:
 	@echo ">> formatting code"
