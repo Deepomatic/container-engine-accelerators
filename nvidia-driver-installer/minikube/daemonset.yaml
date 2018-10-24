@@ -35,6 +35,9 @@ spec:
       - key: "nvidia.com/gpu"
         effect: "NoSchedule"
         operator: "Exists"
+      - key: "deepomatic.com/shared-gpu"
+        effect: "NoSchedule"
+        operator: "Exists"
       volumes:
       - name: dev
         hostPath:

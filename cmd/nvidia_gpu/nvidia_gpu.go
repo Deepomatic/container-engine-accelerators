@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"time"
 
-	gpumanager "github.com/GoogleCloudPlatform/container-engine-accelerators/pkg/gpu/nvidia"
+	gpumanager "github.com/Deepomatic/container-engine-accelerators/pkg/gpu/nvidia"
 	"github.com/golang/glog"
 )
 
@@ -30,15 +30,16 @@ const (
 )
 
 var (
-	hostPathPrefix      = flag.String("host-path", "/home/kubernetes/bin/nvidia", "Path on the host that contains nvidia libraries. This will be mounted inside the container as '-container-path'")
-	containerPathPrefix = flag.String("container-path", "/usr/local/nvidia", "Path on the container that mounts '-host-path'")
-	pluginMountPath     = flag.String("plugin-directory", "/device-plugin", "The directory path to create plugin socket")
+	hostPathPrefix       = flag.String("host-path", "/home/kubernetes/bin/nvidia", "Path on the host that contains nvidia libraries. This will be mounted inside the container as '-container-path'")
+	containerPathPrefix  = flag.String("container-path", "/usr/local/nvidia", "Path on the container that mounts '-host-path'")
+	pluginMountPath      = flag.String("plugin-directory", "/device-plugin", "The directory path to create plugin socket")
+	gpuDuplicationFactor = flag.Uint("gpu-duplication-factor", 100, "The number of fake GPU device declared per real GPU device")
 )
 
 func main() {
 	flag.Parse()
-	glog.Infoln("device-plugin started")
-	ngm := gpumanager.NewNvidiaGPUManager(*hostPathPrefix, *containerPathPrefix)
+	glog.Infoln("device-plugin started with GPU duplication factor of", *gpuDuplicationFactor)
+	ngm := gpumanager.NewSharedNvidiaGPUManager(*hostPathPrefix, *containerPathPrefix, *gpuDuplicationFactor)
 	// Keep on trying until success. This is required
 	// because Nvidia drivers may not be installed initially.
 	for {

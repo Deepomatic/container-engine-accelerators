@@ -13,11 +13,11 @@
 # limitations under the License.
 
 FROM golang:1.9-alpine as builder
-WORKDIR /go/src/github.com/GoogleCloudPlatform/container-engine-accelerators
+WORKDIR /go/src/github.com/Deepomatic/container-engine-accelerators
 COPY . .
 RUN go build cmd/nvidia_gpu/nvidia_gpu.go
-RUN chmod a+x /go/src/github.com/GoogleCloudPlatform/container-engine-accelerators/nvidia_gpu
+RUN chmod a+x /go/src/github.com/Deepomatic/container-engine-accelerators/nvidia_gpu
 
 FROM alpine
-COPY --from=builder /go/src/github.com/GoogleCloudPlatform/container-engine-accelerators/nvidia_gpu /usr/bin/nvidia-gpu-device-plugin
-CMD ["/usr/bin/nvidia-gpu-device-plugin", "-logtostderr"]
+COPY --from=builder /go/src/github.com/Deepomatic/container-engine-accelerators/nvidia_gpu /usr/bin/deepomatic-shared-gpu-gcp-k8s-device-plugin
+CMD ["/usr/bin/deepomatic-shared-gpu-gcp-k8s-device-plugin", "-logtostderr"]

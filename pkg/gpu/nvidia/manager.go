@@ -15,11 +15,13 @@
 package nvidia
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net"
 	"os"
 	"path"
 	"regexp"
+	"strings"
 	"sync"
 	"time"
 
@@ -41,13 +43,14 @@ const (
 )
 
 var (
-	resourceName = "nvidia.com/gpu"
+	resourceName = "deepomatic.com/shared-gpu"
 )
 
 // nvidiaGPUManager manages nvidia gpu devices.
 type nvidiaGPUManager struct {
 	hostPathPrefix      string
 	containerPathPrefix string
+	duplicationFactor   uint
 	defaultDevices      []string
 	devices             map[string]pluginapi.Device
 	grpcServer          *grpc.Server
@@ -56,18 +59,36 @@ type nvidiaGPUManager struct {
 }
 
 func NewNvidiaGPUManager(hostPathPrefix, containerPathPrefix string) *nvidiaGPUManager {
+	return NewSharedNvidiaGPUManager(hostPathPrefix, containerPathPrefix, 1)
+}
+
+func NewSharedNvidiaGPUManager(hostPathPrefix, containerPathPrefix string, duplicationFactor uint) *nvidiaGPUManager {
 	return &nvidiaGPUManager{
 		hostPathPrefix:      hostPathPrefix,
 		containerPathPrefix: containerPathPrefix,
+		duplicationFactor:   duplicationFactor,
 		devices:             make(map[string]pluginapi.Device),
 		stop:                make(chan bool),
 	}
+}
+
+func generateFakeDeviceID(realID string, fakeCounter uint) string {
+	return fmt.Sprintf("%s-_-%d", realID, fakeCounter)
+}
+
+func extractRealDeviceID(fakeDeviceID string) string {
+	return strings.Split(fakeDeviceID, "-_-")[0]
+}
+
+func (ngm *nvidiaGPUManager) GetDeviceFilename(id string) string {
+	return extractRealDeviceID(id)
 }
 
 // Discovers all NVIDIA GPU devices available on the local node by walking `/dev` directory.
 func (ngm *nvidiaGPUManager) discoverGPUs() error {
 	reg := regexp.MustCompile(nvidiaDeviceRE)
 	files, err := ioutil.ReadDir(devDirectory)
+	var realDevices []string
 	if err != nil {
 		return err
 	}
@@ -77,7 +98,15 @@ func (ngm *nvidiaGPUManager) discoverGPUs() error {
 		}
 		if reg.MatchString(f.Name()) {
 			glog.Infof("Found Nvidia GPU %q\n", f.Name())
-			ngm.devices[f.Name()] = pluginapi.Device{ID: f.Name(), Health: pluginapi.Healthy}
+			realDevices = append(realDevices, f.Name())
+		}
+	}
+	// Generate multiple duplicate devices per real device
+	for i := uint(1); i <= ngm.duplicationFactor; i++ {
+		for _, realID := range realDevices {
+			id := generateFakeDeviceID(realID, i)
+			glog.Infof("- shared Nvidia GPU %q\n", id)
+			ngm.devices[id] = pluginapi.Device{ID: id, Health: pluginapi.Healthy}
 		}
 	}
 	return nil
