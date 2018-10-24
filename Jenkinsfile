@@ -12,8 +12,6 @@ node {
         // env.BRANCH_NAME=master
         if (env.BRANCH_NAME.startsWith('k8s-')) {
             version = env.BRANCH_NAME.substring('k8s-'.size())
-        } else if (env.BRANCH_NAME == 'master') {
-            version = 'latest'
         } else {
             version = env.BRANCH_NAME
         }
@@ -35,7 +33,9 @@ node {
         if (! isPR) {
             echo "Mainline branch, pushing to repository"
             image.push()
-            image.push("${version}")
+            if (env.BRANCH_NAME == 'master') {
+                image.push('latest')
+            }
         }
     }
 }
