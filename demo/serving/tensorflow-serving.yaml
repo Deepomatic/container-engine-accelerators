@@ -41,6 +41,7 @@ spec:
           - --port=9000
           - --model_name=inception
           - --model_base_path=gs://vishh/tensorflow/inception/
+          - --per_process_gpu_memory_fraction=0.2
         resources:
           limits:
             deepomatic.com/shared-gpu: 1
