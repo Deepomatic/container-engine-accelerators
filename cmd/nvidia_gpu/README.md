@@ -15,7 +15,7 @@ This device plugin requires that NVIDIA drivers and libraries are installed in a
 Examples of how driver installation needs to be done can be found at:
 - For [COS](https://cloud.google.com/container-optimized-os/):
   - Installer code: https://github.com/GoogleCloudPlatform/cos-gpu-installer
-  - Installer daemonset: https://github.com/GoogleCloudPlatform/container-engine-accelerators/blob/master/daemonset.yaml
+  - Installer daemonset: https://github.com/GoogleCloudPlatform/Deepomatic/blob/master/daemonset.yaml
 
 - For [Ubuntu](https://cloud.google.com/kubernetes-engine/docs/concepts/node-images#ubuntu) (experimental):
   - Installer code: https://github.com/GoogleCloudPlatform/container-engine-accelerators/blob/master/nvidia-driver-installer/ubuntu/entrypoint.sh

@@ -24,6 +24,8 @@ spec:
             - matchExpressions:
               - key: cloud.google.com/gke-accelerator
                 operator: Exists
+              - key: deepomatic.com/shared-gpu
+                operator: Exists
       tolerations:
       - operator: "Exists"
         effect: "NoExecute"
