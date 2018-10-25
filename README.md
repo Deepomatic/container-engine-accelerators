@@ -5,6 +5,8 @@ This fork advertises multiple fake GPU for each real GPU, allowing to share a GP
 
 The goal is to schedule pods on GPUs until the GPU memory is full (GPU memory bin-packing).
 
+See [here](cmd/nvidia_gpu/README.md) for more details (notably [how to use it on GKE](cmd/nvidia_gpu/README.md#how-to-use-in-gke)).
+
 See also [deepomatic/shared-gpu-nvidia-k8s-device-plugin](https://github.com/Deepomatic/shared-gpu-nvidia-k8s-device-plugin) for the same feature based on [NVIDIA own Kubernetes GPU Device Plugin](https://github.com/NVIDIA/k8s-device-plugin).
 
 ## Limits
