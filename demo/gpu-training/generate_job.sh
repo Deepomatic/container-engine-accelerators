@@ -48,6 +48,10 @@ spec:
       labels:
         experiment-id: ${EXPERIMENT_ID}
     spec:
+      tolerations:
+      - key: nvidia.com/gpu
+        operator: Exists
+        effect: NoSchedule
       restartPolicy: Never
       containers:
       - name: resnet-gpu

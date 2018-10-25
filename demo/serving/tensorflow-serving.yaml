@@ -28,6 +28,10 @@ spec:
       labels:
         app: tensorflow-serving
     spec:
+      tolerations:
+      - key: nvidia.com/gpu
+        operator: Exists
+        effect: NoSchedule
       containers:
       - name: tensorflow-serving-container
         image: gcr.io/vishnuk-cloud/tf-serving:1.9-gpu-minimal
