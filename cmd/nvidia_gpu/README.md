@@ -51,7 +51,7 @@ In fact [setting node taints at node-pool creation is also broken](https://issue
   ```
 - Install the nvidia driver (the docker image is preloaded on GKE, we use that with a special daemonset):
   ```shell
-  kubectl apply -f https://github.com/Deepomatic/container-engine-accelerators/blob/master/nvidia-driver-installer/cos/daemonset-preloaded.yaml
+  kubectl apply -f https://raw.githubusercontent.com/Deepomatic/container-engine-accelerators/master/nvidia-driver-installer/cos/daemonset-preloaded.yaml
   ```
 - Verify the `deepomatic.com/shared-gpu` resources appear:
   ```
