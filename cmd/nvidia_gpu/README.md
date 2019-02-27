@@ -32,19 +32,17 @@ We rely on beta GKE features, and not everything works perfectly as of 2018-10-2
 In [GKE](https://cloud.google.com/kubernetes-engine/) the [upstream GCP nvidia device plugin](https://github.com/GoogleCloudPlatform/container-engine-accelerators) is automatically installed via a kubernetes addon as well as a node taint.
 This creates [some issues](https://issuetracker.google.com/issues/74386472#comment9) with this device plugin as the [node taints and pods tolerations mechanism with device plugins](https://notes.mindprince.in/2017/12/17/dedicated-node-pools-and-ExtendedResourceToleration-admission-controller.html) essentially assumes only one extended resource type is available per node.
 In GKE with this device plugin we end up with two extended resources: `nvidia.com/gpu` (automatically) and the new `deepomatic.com/shared-gpu`.
+
 In short: Pods requesting `deepomatic.com/shared-gpu` must thus explicitely tolerate `nvidia.com/gpu` taints for them to be scheduled.
+Another possible workaround is to also request `0` `nvidia.com/gpu`: the ExtendedResoureToleration-admission-controller will then add all the required tolerations.
 
-Furthermore, currently [GKE refuses `/` in node taints](https://issuetracker.google.com/issues/118393036), so we cannot rely on the [ExtendedResourceToleration admission controller](https://notes.mindprince.in/2017/12/17/dedicated-node-pools-and-ExtendedResourceToleration-admission-controller.html) for `deepomatic.com/shared-gpu` either:
-Pods requesting `deepomatic.com/shared-gpu` must thus also explicitely tolerate `deepomatic.com--shared-gpu` taints for them to be scheduled.
-
-In fact [setting node taints at node-pool creation is also broken](https://issuetracker.google.com/issues/116842165), so the recommended way for now is to manually taint nodes (each time a new node is create, which effectively breaks node-pool auto-scaling).
 
 ### Create the cluster
-- Create the Shared GPUs node-pool with one GPU and the following node label: `deepomatic.com/shared-gpu=true`
-- Add the taint to the nodes:
-  ```shell
-  kubectl taint nodes -l deepomatic.com/shared-gpu=true deepomatic.com/shared-gpu=present:NoSchedule
-  ```
+- Create a Shared GPUs node-pool with:
+  - one GPU
+  - node label: `deepomatic.com/shared-gpu=true`
+  - node taint: `deepomatic.com/shared-gpu=present:NoSchedule`
+
 - Install the `deepomatic-shared-gpu-gcp-k8s-device-plugin` DaemonSet:
   ```shell
   kubectl apply -f https://raw.githubusercontent.com/Deepomatic/container-engine-accelerators/master/cmd/nvidia_gpu/daemonset.yaml
